@@ -25,6 +25,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Can Photo Book"
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -94,6 +95,36 @@ extension ViewController: UITableViewDataSource {
         sourceName = dataArray[indexPath.row].name ?? ""
         sourceId = dataArray[indexPath.row].id
         performSegue(withIdentifier: "toSecondVC", sender: nil)
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let context = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Gallery")
+        
+        let idString = dataArray[indexPath.row].id?.uuidString
+        fetchRequest.predicate = NSPredicate(format: "id = %@", idString!)
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            for result in results as! [NSManagedObject]{
+                if (result.value(forKey: "id") as? UUID) != nil {
+                    context.delete(result)
+                    dataArray.remove(at: indexPath.row)
+                    self.tableView.reloadData()
+                    
+                    do {
+                        try context.save()
+                    } catch {
+                        print("Error: save request")
+                    }
+                    
+                }
+            }
+        } catch {
+            print("Error: delete request")
+        }
     }
 }
 
