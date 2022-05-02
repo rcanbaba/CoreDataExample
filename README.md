@@ -1,5 +1,8 @@
-# CoreDataExample
-Core data usage
+# PhotoBookApp
+
+#CoreData Example
+
+a core data usage sample
 
 - Apple cihazlar için en sorunsuz çalışan veritabanı
 - Başka 3. parti kütüphalere ihityacımız olmaz
