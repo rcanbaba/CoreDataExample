@@ -9,3 +9,7 @@ a core data usage sample
 - Kullanıcı deneyimi çok iyi
 
 Projeyi oluştururken core data yı seçmeyi unutmayın :)  (Use Core Data) 
+
+- .xcdatamodel dosyası oluşur, bu bizim veri modelimizi oluşturuyor.
+
+...
