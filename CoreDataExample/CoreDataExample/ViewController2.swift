@@ -35,7 +35,7 @@ class ViewController2: UIViewController {
     
     @IBAction func saveButtonTapped(_ sender: Any) {
         
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let context = appDelegate.persistentContainer.viewContext
         let dataToSave = NSEntityDescription.insertNewObject(forEntityName: "Gallery", into: context)
         
@@ -58,8 +58,8 @@ class ViewController2: UIViewController {
             print("Error")
         }
         
-    }
-    
+        self.navigationController?.popViewController(animated: true)
+    }    
 
 }
 
