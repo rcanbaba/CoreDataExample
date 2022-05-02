@@ -19,6 +19,9 @@ class ViewController: UIViewController {
     
     var dataArray = [imageData]()
     
+    var sourceName = ""
+    var sourceId: UUID?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -33,7 +36,16 @@ class ViewController: UIViewController {
         getData()
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toSecondVC" {
+            let destiationVC = segue.destination as! ViewController2
+            destiationVC.targetName = sourceName
+            destiationVC.targetId = sourceId
+        }
+    }
+    
     @objc func addItem() {
+        sourceName = ""
         performSegue(withIdentifier: "toSecondVC", sender: nil)
     }
     
@@ -72,11 +84,16 @@ extension ViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = UITableViewCell()
         cell.textLabel?.text = dataArray[indexPath.row].name
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        sourceName = dataArray[indexPath.row].name ?? ""
+        sourceId = dataArray[indexPath.row].id
+        performSegue(withIdentifier: "toSecondVC", sender: nil)
     }
 }
 

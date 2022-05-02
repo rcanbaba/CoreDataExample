@@ -15,8 +15,46 @@ class ViewController2: UIViewController {
     @IBOutlet weak var locationTextField: UITextField!
     @IBOutlet weak var yearTextField: UITextField!
     
+    var targetName = ""
+    var targetId: UUID?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if targetName != "" {
+            
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+            let context = appDelegate.persistentContainer.viewContext
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Gallery")
+            let idString = targetId?.uuidString
+            fetchRequest.predicate = NSPredicate(format: "id = %@", idString!)
+            fetchRequest.returnsObjectsAsFaults = false
+            
+            do {
+                let results = try context.fetch(fetchRequest)
+                for result in results as! [NSManagedObject]{
+                    if let name = result.value(forKey: "name") as? String {
+                        nameTextField.text = name
+                    }
+                    if let location = result.value(forKey: "location") as? String {
+                        locationTextField.text = location
+                    }
+                    if let year = result.value(forKey: "year") as? Int {
+                        yearTextField.text = String(year)
+                    }
+                    if let imageData = result.value(forKey: "image") as? Data {
+                        let image = UIImage(data: imageData)
+                        imageView.image = image
+                    }
+                }
+            } catch {
+                print("Error: fetch request, VC2")
+            }
+            
+        } else {
+            
+            
+        }
         
         imageView.isUserInteractionEnabled = true
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTap))
@@ -30,7 +68,6 @@ class ViewController2: UIViewController {
         picker.sourceType = .photoLibrary
         picker.allowsEditing = true
         present(picker, animated: true, completion: nil)
-        
     }
     
     @IBAction func saveButtonTapped(_ sender: Any) {
